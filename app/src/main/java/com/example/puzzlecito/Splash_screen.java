@@ -14,7 +14,7 @@ public class Splash_screen extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash_screen);
 
-        //Después de cargar la aplciación, iniciamos la actividad prinicpal y finalizamos la actual
+        //Después de cargar la aplicación, iniciamos la actividad prinicpal y finalizamos la actual
         startActivity(new Intent(Splash_screen.this, MainActivity.class));
         sleep(1000);
         finish();

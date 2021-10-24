@@ -6,5 +6,5 @@
         android:title="Help"/>
 
     <item android:id="@+id/Images"
-        android:title="Select Images"/>
+        android:title="Select Image"/>
 </menu>

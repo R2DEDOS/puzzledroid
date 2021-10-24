@@ -21,15 +21,10 @@ public class SelectImage extends AppCompatActivity {
 
         AssetManager am = getAssets();
 
-
-
         try {
                 final String[] files = am.list("img");
-
-
                 GridView grid = findViewById(R.id.grid);
                 grid.setAdapter(new ImageAdapter(this));
-
                 grid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -38,8 +33,6 @@ public class SelectImage extends AppCompatActivity {
                         startActivity(intent);
                     }
                 });
-
-
 
         } catch (IOException e) {
             Toast.makeText(this, e.getLocalizedMessage(), Toast.LENGTH_SHORT);

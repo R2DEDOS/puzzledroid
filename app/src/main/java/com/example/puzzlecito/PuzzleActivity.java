@@ -2,9 +2,15 @@ package com.example.puzzlecito;
 
 import static java.lang.Math.abs;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+
+import android.content.ContentValues;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.AssetManager;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -18,6 +24,8 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.SystemClock;
+import android.view.KeyEvent;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Chronometer;
@@ -34,6 +42,7 @@ import java.util.Random;
 
 public class PuzzleActivity extends AppCompatActivity {
 
+    int elapsedMillis = 0;
     Chronometer chronometer;
     ProgressBar progressbar;
     ArrayList<PuzzlePiece> pieces;
@@ -72,7 +81,7 @@ public class PuzzleActivity extends AppCompatActivity {
                 chronometer.setBase(SystemClock.elapsedRealtime());
                 chronometer.start();
 
-                progressbar = findViewById(R.id.simpleProgressBar);
+//                progressbar = findViewById(R.id.simpleProgressBar);
 
 
                 Collections.shuffle(pieces);
@@ -90,6 +99,7 @@ public class PuzzleActivity extends AppCompatActivity {
 
         });
     }
+
 
     private void setPicFromAsset(String assetName, ImageView imageView) {
         // Get the dimensions of the View
@@ -125,9 +135,10 @@ public class PuzzleActivity extends AppCompatActivity {
     }
 
     private ArrayList<PuzzlePiece> splitImage() {
-        int piecesNumber = 12;
-        int rows = 4;
-        int cols = 3;
+
+        int rows = 2;// + MainActivity.cont;
+        int cols = 1;// + MainActivity.cont;
+        int piecesNumber = rows * cols;
 
         ImageView imageView = findViewById(R.id.imageView);
         ArrayList<PuzzlePiece> pieces = new ArrayList<>(piecesNumber);
@@ -302,9 +313,36 @@ public class PuzzleActivity extends AppCompatActivity {
         return ret;
     }
 
+    @Override
+    public void onBackPressed() {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setMessage("¿Desea salir de R2DEDOS?")
+            .setPositiveButton("Si", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    MainActivity.elapsedTime = 0;
+                    Intent start = new Intent(PuzzleActivity.this, MainActivity.class);
+                    startActivity(start);
+                    finishActivity(0);
+                }
+            })
+            .setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    dialog.dismiss();
+                }
+            });
+        builder.show();
+    }
+
+
     private void showElapsedTime() {
-        int elapsedMillis = (int) ((SystemClock.elapsedRealtime() - chronometer.getBase() ) / 1000);
-        Toast.makeText(PuzzleActivity.this, "Elapsed seconds: " + elapsedMillis,
+        elapsedMillis = (int) ((SystemClock.elapsedRealtime() - chronometer.getBase() ) / 1000);
+        //Conversion
+        long minutes = ((SystemClock.elapsedRealtime() - chronometer.getBase())/1000) / 60;
+        long seconds = ((SystemClock.elapsedRealtime() - chronometer.getBase())/1000) % 60;
+
+
+        Toast.makeText(PuzzleActivity.this, "Elapsed time: " + minutes + ":" + seconds,
                 Toast.LENGTH_SHORT).show();
     }
 
@@ -313,8 +351,9 @@ public class PuzzleActivity extends AppCompatActivity {
             //chronometer.stop();
             //progressbar.setMax(100);
             showElapsedTime();
+            MainActivity.difficulty += 1;
+            MainActivity.elapsedTime += elapsedMillis;
             finish();
-
         }
     }
 
@@ -324,7 +363,8 @@ public class PuzzleActivity extends AppCompatActivity {
                 return false;
             }
         }
-
         return true;
     }
+
+
 }

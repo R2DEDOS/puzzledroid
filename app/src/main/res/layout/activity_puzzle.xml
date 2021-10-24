@@ -32,16 +32,21 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent">
+
+        <Chronometer
+            android:id="@+id/simpleChronometer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
+            android:layout_marginStart="189dp"
+            android:layout_marginLeft="189dp"
+            android:layout_marginTop="10dp"
+            tools:ignore="MissingConstraints" />
     </RelativeLayout>
 
     <!-- Cronometro -->
-    <Chronometer
-        android:id="@+id/simpleChronometer"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        tools:layout_editor_absoluteX="360dp"
-        tools:ignore="MissingConstraints" />
-
+    <!--
     <ProgressBar
         android:id="@+id/simpleProgressBar"
         style="?android:attr/progressBarStyle"
@@ -54,6 +59,7 @@
         android:max="100"
         android:progress="100"
         android:rotation="-90" />
+    -->
 </androidx.constraintlayout.widget.ConstraintLayout>
 
 
