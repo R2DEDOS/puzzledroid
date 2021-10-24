@@ -48,13 +48,13 @@ public class ScoreRegister extends AppCompatActivity {
 
             BBDDHelper dbHelper = new BBDDHelper(this);
 
-            Button buttonAccept = findViewById(R.id.AcceptButton);
+            Button buttonAccept = findViewById(R.id.confirm);
             buttonAccept.setOnClickListener(new View.OnClickListener() {
 
                 @Override
                 public void onClick(View v) {
 
-                    if (v.getId() == R.id.AcceptButton) {
+                    if (v.getId() == R.id.confirm) {
                         String name = myname.getText().toString();
 
 
@@ -79,5 +79,16 @@ public class ScoreRegister extends AppCompatActivity {
 //            super.onSaveInstanceState(outState);
 //            outState.putInt("name", BBDDSchema.NAME);
 //        }
+
+
+//    // Este método dispara los acontecimientos que ocurren cuando se completa el puzzle.
+//    public void setOnCompleteCallback(OnCompleteCallback onCompleteCallback) {
+//        OnCompleteCallback occ = onCompleteCallback;
+//    }
+//
+//    public interface OnCompleteCallback {
+//        void onComplete();
+//    }
+//
 
     }

@@ -7,16 +7,18 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.io.IOException;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements Window.Callback {
 
     public static int elapsedTime = 0;
     public static int difficulty = 0;
+    public ScoreRegister sc;
 //    public static boolean rollback = false;
     //public static boolean endgame = false;
 
@@ -43,8 +45,6 @@ public class MainActivity extends AppCompatActivity {
 //                                break;
 //                            }
                         }
-//                        Intent intent_score = new Intent(v.getContext(), Score_register.class);
-//                        startActivity(intent_score);
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -52,33 +52,38 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+
         //Listener for score button
         Button score_button = (Button) findViewById(R.id.score);
         score_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(MainActivity.this, ScoreRegister.class));
+                startActivity(new Intent(MainActivity.this, Score.class));
+
             }
         });
 
-        //Listener for exit button
-        Button exit_button = (Button) findViewById(R.id.exit);
-        exit_button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
+//
+//        sc.setOnCompleteCallback(new ScoreRegister.OnCompleteCallback() {
+//             @Override
+//             public void onComplete() {
+//                 Intent intent_score = new Intent(getApplicationContext(), ScoreRegister.class);
+//                 startActivity(intent_score);
+//
+//             }
+//        });
 
     }
+        //Listener for exit button
+//        Button exit_button = (Button) findViewById(R.id.exit);
+//        exit_button.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                //
+//            }
+//        });
 
 
-//    @Override
-//    public void onResume() {
-//        super.onResume();
-//        Intent intent_score = new Intent(v.getContext(), Score_register.class);
-//        startActivity(intent_score);
-//    }
 
     @Override public boolean onCreateOptionsMenu(Menu mymenu){
         getMenuInflater().inflate(R.menu.menu, mymenu);

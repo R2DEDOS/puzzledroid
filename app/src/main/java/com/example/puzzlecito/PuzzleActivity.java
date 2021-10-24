@@ -44,7 +44,7 @@ public class PuzzleActivity extends AppCompatActivity {
 
     int elapsedMillis = 0;
     Chronometer chronometer;
-    ProgressBar progressbar;
+//    ProgressBar progressbar;
     ArrayList<PuzzlePiece> pieces;
 
     @Override
