@@ -19,5 +19,3 @@ class BBDDSchema {
     static final String SQL_DELETE =
             "DROP TABLE IF EXISTS " + TABLE;
 }
-
-    //private static final String COMMENTS_TABLE_CREATE = "CREATE TABLE comments(_id INTEGER PRIMARY KEY AUTOINCREMENT, user TEXT, comment TEXT)";

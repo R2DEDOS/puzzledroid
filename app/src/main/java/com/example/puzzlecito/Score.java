@@ -72,7 +72,6 @@ public class Score extends AppCompatActivity {
 
         Button backToMenu = findViewById(R.id.backToMenu);
         backToMenu.setOnClickListener(new View.OnClickListener() {
-
             @Override
             public void onClick(View v) {
                 Intent intent_main = new Intent(getApplicationContext(), MainActivity.class);

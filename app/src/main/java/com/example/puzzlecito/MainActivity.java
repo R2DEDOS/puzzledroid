@@ -7,7 +7,6 @@ import android.content.res.AssetManager;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
@@ -43,7 +42,6 @@ public class MainActivity extends AppCompatActivity implements Window.Callback {
                         MainActivity.total_level = files.length;
                         for (int i = 0; i < files.length; i++) {
                             Intent intent = new Intent(v.getContext(), PuzzleActivity.class);
-//                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
                             intent.putExtra("assetName", files[i]);
                             startActivity(intent);
                         }
@@ -62,7 +60,6 @@ public class MainActivity extends AppCompatActivity implements Window.Callback {
             @Override
             public void onClick(View v) {
                 Intent intent_sc = new Intent(v.getContext(), Score.class);
-//                intent_sc.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 intent_sc.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent_sc);
 
@@ -108,7 +105,7 @@ public class MainActivity extends AppCompatActivity implements Window.Callback {
                 return true;
 
             case R.id.Help:
-                // Se abre la WebView con la ayuda
+                //Open webview with help
                 Intent help = new Intent(this, HelpActivity.class);
                 startActivity(help);
                 return true;

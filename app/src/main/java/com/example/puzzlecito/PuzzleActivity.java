@@ -2,15 +2,9 @@ package com.example.puzzlecito;
 
 import static java.lang.Math.abs;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-
-import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.AssetManager;
-import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -24,15 +18,13 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.SystemClock;
-import android.view.KeyEvent;
-import android.view.MenuItem;
-import android.view.View;
-import android.widget.AdapterView;
 import android.widget.Chronometer;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -44,7 +36,6 @@ public class PuzzleActivity extends AppCompatActivity {
 
     int elapsedMillis = 0;
     Chronometer chronometer;
-//    ProgressBar progressbar;
     ArrayList<PuzzlePiece> pieces;
 
     @Override
@@ -69,20 +60,10 @@ public class PuzzleActivity extends AppCompatActivity {
                 }
                 pieces = splitImage();
                 TouchListener touchListener = new TouchListener(PuzzleActivity.this);
-                //for(PuzzlePiece piece : pieces) {
 
-                //piece.setOnTouchListener(touchListener);
-                //layout.addView(piece);
-                //}
-                // shuffle pieces order
-
-                //Chronometer start
                 chronometer = findViewById(R.id.simpleChronometer);
                 chronometer.setBase(SystemClock.elapsedRealtime());
                 chronometer.start();
-
-//                progressbar = findViewById(R.id.simpleProgressBar);
-
 
                 Collections.shuffle(pieces);
                 for(PuzzlePiece piece : pieces) {
@@ -136,8 +117,8 @@ public class PuzzleActivity extends AppCompatActivity {
 
     private ArrayList<PuzzlePiece> splitImage() {
 
-        int rows = 2;// + MainActivity.cont;
-        int cols = 1;// + MainActivity.cont;
+        int rows = 3 + MainActivity.difficulty;
+        int cols = 2 + MainActivity.difficulty;
         int piecesNumber = rows * cols;
 
         ImageView imageView = findViewById(R.id.imageView);
@@ -315,7 +296,6 @@ public class PuzzleActivity extends AppCompatActivity {
 
 
 
-
     @Override
     public void onBackPressed() {
 
@@ -351,8 +331,6 @@ public class PuzzleActivity extends AppCompatActivity {
 
     public void checkGameOver() {
         if (isGameOver()) {
-            //chronometer.stop();
-            //progressbar.setMax(100);
             showElapsedTime();
             MainActivity.difficulty += 1;
             MainActivity.elapsedTime += elapsedMillis;
