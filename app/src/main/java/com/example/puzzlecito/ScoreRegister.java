@@ -19,10 +19,6 @@ public class ScoreRegister extends AppCompatActivity {
             super.onCreate(savedInstanceState);
             setContentView(R.layout.activity_score_register);
 
-
-
-
-
             TextView myname = findViewById(R.id.editTextTextPersonName);
             TextView myscore = findViewById(R.id.myscore);
             long minutes = (MainActivity.elapsedTime ) / 60;
@@ -42,10 +38,8 @@ public class ScoreRegister extends AppCompatActivity {
                     if (v.getId() == R.id.confirm) {
                         String name = myname.getText().toString();
 
-
-//                        SQLiteDatabase db = dbHelper.getReadableDatabase();
                         SQLiteDatabase db = dbHelper.getWritableDatabase();
-                        // Insertamos la puntuación en la BBDD
+
                         ContentValues valores = new ContentValues();
                         valores.put(BBDDSchema.NAME, name);
                         valores.put(String.valueOf(BBDDSchema.TIME), MainActivity.elapsedTime);
@@ -61,26 +55,6 @@ public class ScoreRegister extends AppCompatActivity {
                     }
                 }
             });
-            // Esperamos 3 segundos para cargar el siguiente puzzle
-            //sc.postDelayed(Score_register.this, 3000);
         }
-
-
-//        @Override
-//        protected void onSaveInstanceState(@NonNull Bundle outState) {
-//            super.onSaveInstanceState(outState);
-//            outState.putInt("name", BBDDSchema.NAME);
-//        }
-
-
-//    // Este método dispara los acontecimientos que ocurren cuando se completa el puzzle.
-//    public void setOnCompleteCallback(OnCompleteCallback onCompleteCallback) {
-//        OnCompleteCallback occ = onCompleteCallback;
-//    }
-//
-//    public interface OnCompleteCallback {
-//        void onComplete();
-//    }
-//
 
     }
