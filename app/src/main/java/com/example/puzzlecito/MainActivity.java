@@ -23,9 +23,6 @@ public class MainActivity extends AppCompatActivity implements Window.Callback {
     public static int difficulty = 0;
     public static int total_level = 0;
     public static String name = "";
-//    public ScoreRegister sc;
-//    public static boolean rollback = false;
-//    public static boolean endgame = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,7 +62,7 @@ public class MainActivity extends AppCompatActivity implements Window.Callback {
             @Override
             public void onClick(View v) {
                 Intent intent_sc = new Intent(v.getContext(), Score.class);
-                intent_sc.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+//                intent_sc.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 intent_sc.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent_sc);
 
@@ -74,22 +71,12 @@ public class MainActivity extends AppCompatActivity implements Window.Callback {
         });
 
 
-//        sc.setOnCompleteCallback(new ScoreRegister.OnCompleteCallback() {
-//             @Override
-//             public void onComplete() {
-//                 Intent intent_score = new Intent(getApplicationContext(), ScoreRegister.class);
-//                 startActivity(intent_score);
-//
-//             }
-//        });
-//
-//    }
         //Listener for exit button
         Button exit_button = (Button) findViewById(R.id.exit);
         exit_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                finish();
+                onBackPressed();
             }
         });
     }
