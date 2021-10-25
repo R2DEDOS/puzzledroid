@@ -72,5 +72,14 @@ public class Score extends AppCompatActivity {
         }
     }
 
+    @Override
+    public void onBackPressed() {
+
+        Intent intent_main = new Intent(getApplicationContext(), MainActivity.class);
+        intent_main.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        intent_main.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent_main);
+    }
+
 
 }
