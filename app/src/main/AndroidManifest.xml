@@ -15,6 +15,9 @@
         tools:ignore="AllowBackup"
         tools:targetApi="m">
         <activity
+            android:name=".ScoreRegister"
+            android:exported="true" />
+        <activity
             android:name=".Score"
             android:exported="true" />
         <activity

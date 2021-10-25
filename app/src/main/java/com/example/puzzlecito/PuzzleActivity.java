@@ -313,12 +313,15 @@ public class PuzzleActivity extends AppCompatActivity {
         return ret;
     }
 
+
+
+
     @Override
     public void onBackPressed() {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setMessage("¿Desea salir de R2DEDOS?")
-            .setPositiveButton("Si", new DialogInterface.OnClickListener() {
+            builder.setMessage("Back to main menu?")
+            .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
                     MainActivity.elapsedTime = 0;
                     Intent start = new Intent(PuzzleActivity.this, MainActivity.class);
@@ -326,7 +329,7 @@ public class PuzzleActivity extends AppCompatActivity {
                     finishActivity(0);
                 }
             })
-            .setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+            .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
                     dialog.dismiss();
                 }

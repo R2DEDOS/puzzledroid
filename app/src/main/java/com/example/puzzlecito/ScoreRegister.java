@@ -1,6 +1,8 @@
 package com.example.puzzlecito;
 
 import android.content.ContentValues;
+import android.content.Intent;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.View;
@@ -18,25 +20,7 @@ public class ScoreRegister extends AppCompatActivity {
             setContentView(R.layout.activity_score_register);
 
 
-//            //initiate database
-//            BBDDHelper dbHelper = new BBDDHelper(this);
-//            SQLiteDatabase db = dbHelper.getReadableDatabase();
-//
-//            //query
-//            String[] projection = {
-//                    BBDDSchema.NAME,
-//                    String.valueOf(BBDDSchema.TIME)
-//            };
-//
-//            Cursor cursor = db.query(
-//                    BBDDSchema.TABLE,   // Table query
-//                    projection,                 // Columns to return
-//                    null,
-//                    null,
-//                    null,
-//                    null,
-//                    BBDDSchema.TIME + " DESC" //Order by score
-//            );
+
 
 
             TextView myname = findViewById(R.id.editTextTextPersonName);
@@ -48,6 +32,7 @@ public class ScoreRegister extends AppCompatActivity {
 
             BBDDHelper dbHelper = new BBDDHelper(this);
 
+
             Button buttonAccept = findViewById(R.id.confirm);
             buttonAccept.setOnClickListener(new View.OnClickListener() {
 
@@ -58,7 +43,8 @@ public class ScoreRegister extends AppCompatActivity {
                         String name = myname.getText().toString();
 
 
-                        SQLiteDatabase db = dbHelper.getReadableDatabase();
+//                        SQLiteDatabase db = dbHelper.getReadableDatabase();
+                        SQLiteDatabase db = dbHelper.getWritableDatabase();
                         // Insertamos la puntuación en la BBDD
                         ContentValues valores = new ContentValues();
                         valores.put(BBDDSchema.NAME, name);
@@ -66,6 +52,12 @@ public class ScoreRegister extends AppCompatActivity {
 
                         //Insert in database
                         db.insert(BBDDSchema.TABLE, null, valores);
+
+                        Intent intent_score = new Intent(getApplicationContext(), Score.class);
+                        intent_score.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        intent_score.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(intent_score);
+
                     }
                 }
             });

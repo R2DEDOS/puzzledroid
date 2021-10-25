@@ -6,8 +6,9 @@
     <string name="score">score</string>
     <string name="play">play</string>
     <string name="urlhelp">https://sites.google.com/uoc.edu/p8-r2dedos/inicio</string>
-    <string name="accept">Accept</string>
-    <string name="congratulations">CONGRATULATIONS</string>
     <string name="please_enter_your_name">Please enter your name</string>
+    <string name="confirm">Confirm</string>
     <string name="your_score">Your Score:</string>
+    <string name="accept">Accept</string>
+    <string name="congratulations">CONGRATULATIONS!!</string>
 </resources>
