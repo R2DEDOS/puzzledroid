@@ -15,8 +15,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 public class Score extends AppCompatActivity {
 
-    private int rows_score = 15;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -31,7 +29,8 @@ public class Score extends AppCompatActivity {
 
         if (cursor.getCount() > 0) {
             cursor.moveToFirst();
-            for (int x=0; x <= rows_score && cursor.moveToNext(); x++) {
+            int rows_score = 15;
+            for (int x = 0; x < rows_score; x++) {
 
                 TableRow row = new TableRow(this);
                 row.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT));
