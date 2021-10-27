@@ -117,8 +117,8 @@ public class PuzzleActivity extends AppCompatActivity {
 
     private ArrayList<PuzzlePiece> splitImage() {
 
-        int rows = 2 ;//+ MainActivity.difficulty;
-        int cols = 1 ;//+ MainActivity.difficulty;
+        int rows = 2;// + MainActivity.difficulty;
+        int cols = 1;// + MainActivity.difficulty;
         int piecesNumber = rows * cols;
 
         ImageView imageView = findViewById(R.id.imageView);
