@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "999249083286",
+    "firebase_url": "https://puzzledroid-r2dedos-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "puzzledroid-r2dedos",
+    "storage_bucket": "puzzledroid-r2dedos.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:999249083286:android:c4e9076cd47007541abbb7",
+        "android_client_info": {
+          "package_name": "com.example.puzzlecito"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "999249083286-qb2dpgrrf6ibjb23jmu425ehvaj7sdda.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.puzzlecito",
+            "certificate_hash": "b60495e00eccea64aec856101923f234e8991787"
+          }
+        },
+        {
+          "client_id": "999249083286-lf3p4ukvmgdnrp43cs2mj46ur62667oa.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA6qcfbP42NpOtRIJB9fXtVhx8PH-FZw7c"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "999249083286-lf3p4ukvmgdnrp43cs2mj46ur62667oa.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
