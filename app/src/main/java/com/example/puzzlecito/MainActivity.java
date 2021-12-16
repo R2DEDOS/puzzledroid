@@ -1,42 +1,26 @@
 package com.example.puzzlecito;
 
 import android.annotation.SuppressLint;
-import android.app.ActivityManager;
-import android.content.ComponentName;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.res.AssetManager;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
-
-import com.bumptech.glide.Glide;
-import com.firebase.ui.storage.images.FirebaseImageLoader;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.storage.FileDownloadTask;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.List;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 public class MainActivity extends AppCompatActivity implements Window.Callback {
 
@@ -44,50 +28,73 @@ public class MainActivity extends AppCompatActivity implements Window.Callback {
     public static int difficulty = 0;
     public static int total_level = 0;
     public static String name = "";
-    StorageReference ref = FirebaseStorage.getInstance().getReference();
+
+    public static int imagesview = 0;
+    long count = 3;
+    public static long level=0;
+    long contador;
+    final Long[] time = new Long[1];
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        Intent intent = getIntent();
 
-        //Listener for play button
+        //Retrieve level
+        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+        DatabaseReference databaseReference = firebaseDatabase.getReference();
+        DatabaseReference emailReference = databaseReference.child("Level");
+        emailReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                level = snapshot.child(GoogleSignInActivity.uid).getValue(Long.class);
+                difficulty = (int) level;
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+            }
+        });
+
+        //retrieve time
+        time[0] = (long) 0;
+        DatabaseReference timeReference = databaseReference.child("Time").child(GoogleSignInActivity.uid);
+        timeReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                time[0] = snapshot.getValue(Long.class);
+                if (time[0] == null) time[0] = 0L;
+                else elapsedTime += time[0];
+
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+            }
+        });
+
         Button play = (Button) findViewById(R.id.play);
-//        play.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                AssetManager am = getAssets();
-//                try {
-//                    if (v.getId() == R.id.play) {
-//                        //showScore();
-//                        final String[] files = am.list("img");
-//                        MainActivity.total_level = files.length;
-//                        for (int i = 0; i < files.length; i++) {
-//                            Intent intent = new Intent(v.getContext(), PuzzleActivity.class);
-//                            intent.putExtra("assetName", files[i]);
-//                            startActivity(intent);
-//                        }
-//
-//                    }
-//
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                }
-//
-//            }
-//        });
         play.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (v.getId() == R.id.play) {
-                    Intent intent = new Intent(v.getContext(), PuzzleActivity.class);
-                    //intent.putExtra("firebasegallery", images[0]);
-                    startActivity(intent);
+
+
+                    contador = count - level;
+                    while(contador > 0){
+                        //System.out.println("Count del main: "+count + "\ni: "+ i);
+                        Intent intent = new Intent(v.getContext(), PuzzleActivity.class);
+                        intent.putExtra("contador", String.valueOf(contador));
+                        intent.putExtra("totalImages", String.valueOf(count-level));
+                        startActivity(intent);
+                        contador--;
+                    }
                 }
 
             }
         });
+
 
         //Listener for score button
         Button score_button = (Button) findViewById(R.id.score);
@@ -114,6 +121,11 @@ public class MainActivity extends AppCompatActivity implements Window.Callback {
 
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+    }
 
     @Override public boolean onCreateOptionsMenu(Menu mymenu){
         getMenuInflater().inflate(R.menu.menu, mymenu);
@@ -139,11 +151,6 @@ public class MainActivity extends AppCompatActivity implements Window.Callback {
     @Override public boolean onOptionsItemSelected(MenuItem option_menu){
         //int id = option_menu.getItemId();
         switch (option_menu.getItemId()) {
-
-            case R.id.Images:
-                Intent myIntent = new Intent(MainActivity.this,SelectImage.class);
-                startActivity(myIntent);
-                return true;
 
             case R.id.Help:
                 //Open webview with help
@@ -186,14 +193,14 @@ public class MainActivity extends AppCompatActivity implements Window.Callback {
     public void onBackPressed() {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage("Do you want to exit?")
-                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+        builder.setMessage(R.string.onBackPressed)
+                .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         finishAffinity();
                         System.exit(0);
                     }
                 })
-                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         dialog.dismiss();
                     }

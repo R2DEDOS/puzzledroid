@@ -2,139 +2,120 @@ package com.example.puzzlecito;
 
 import static java.lang.Math.abs;
 
-import android.app.Activity;
-import android.app.DatePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.res.AssetManager;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
-import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.media.ExifInterface;
-import android.media.MediaPlayer;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.SystemClock;
-import android.provider.CalendarContract;
-import android.util.Log;
-import android.view.View;
 import android.widget.Chronometer;
-import android.widget.DatePicker;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
-import com.bumptech.glide.request.target.CustomTarget;
-import com.bumptech.glide.request.transition.Transition;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 
-
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.Random;
 
-
 public class PuzzleActivity extends AppCompatActivity {
 
-    private static final String TAG = "";
     int elapsedMillis = 0;
     Chronometer chronometer;
     ArrayList<PuzzlePiece> pieces;
-    String mCurrentPhotoPath;
-    String mCurrentPhotoUri;
-    String firebasegallery;
-    //MediaPlayer player;
+    RelativeLayout layout;
+    ImageView imageView;
+    long contador;
+    int totalImages;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_puzzle);
-
-        final RelativeLayout layout = findViewById(R.id.layout);
-
-
+        layout = findViewById(R.id.layout);
+        imageView = findViewById(R.id.imageView);
         Intent intent = getIntent();
-        final String assetName = intent.getStringExtra("assetName");
-        mCurrentPhotoPath = intent.getStringExtra("mCurrentPhotoPath");
-        mCurrentPhotoUri = intent.getStringExtra("mCurrentPhotoUri");
-        firebasegallery = intent.getStringExtra("firebasegallery");
+        String cont = intent.getStringExtra("contador");
+        contador = Long.parseLong(cont);
+        totalImages = Integer.parseInt(intent.getStringExtra("totalImages"));
 
-        ImageView imageView = findViewById(R.id.imageView);
-        StorageReference storageReference = FirebaseStorage.getInstance().getReference().child("images/puzzle1.jpg");
-        Glide.with(this)
-                .asBitmap()
-                .load(storageReference)
-                .into(new CustomTarget<Bitmap>() {
-                    @Override
-                    public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
-                        imageView.setImageBitmap(resource);
-                    }
-
-                    @Override
-                    public void onLoadCleared(@Nullable Drawable placeholder) {
-                    }
-                });
-
-        imageView.post(new Runnable() {
+        //Retrieve images
+        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+        DatabaseReference databaseReference = firebaseDatabase.getReference();
+        DatabaseReference childReference = databaseReference.child("Data");
+        childReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void run() {
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
 
-               /* if (firebasegallery != null) {
-                    setPicFromAsset(firebasegallery, imageView);
-                    //setPicFromPath(firebasegallery, imageView);
-                    //imageView.setImageURI(Uri.parse(firebasegallery));
-                }
-                else if (mCurrentPhotoPath != null) {
-                    setPicFromPath(mCurrentPhotoPath, imageView);
-                }
-                else if (mCurrentPhotoUri != null) {
-                    imageView.setImageURI(Uri.parse(mCurrentPhotoUri));
-                }
-                */
 
-                pieces = splitImage(imageView);
+                Random random = new Random();
+                int n = random.nextInt(20 - 1);
+                String valor = String.valueOf(n);
+                String url = snapshot.child(valor).child("image").getValue(String.class);
+                Picasso.get()
+                        .load(url)
+                        .into(new Target() {
+                            @Override
+                            public void onBitmapLoaded(final Bitmap bitmap, Picasso.LoadedFrom from) {
+                                imageView.setImageBitmap(bitmap);
+                                pieces = splitImage();
+                                TouchListener touchListener = new TouchListener(PuzzleActivity.this);
 
-                TouchListener touchListener = new TouchListener(PuzzleActivity.this);
+                                chronometer = findViewById(R.id.simpleChronometer);
+                                chronometer.setBase(SystemClock.elapsedRealtime());
+                                chronometer.start();
 
-                chronometer = findViewById(R.id.simpleChronometer);
-                chronometer.setBase(SystemClock.elapsedRealtime());
-                chronometer.start();
+                                Collections.shuffle(pieces);
+                                for (PuzzlePiece piece : pieces) {
+                                    piece.setOnTouchListener(touchListener);
+                                    layout.addView(piece);
+                                    // randomize position, on the bottom of the screen
+                                    RelativeLayout.LayoutParams lParams = (RelativeLayout.LayoutParams) piece.getLayoutParams();
+                                    lParams.leftMargin = new Random().nextInt(layout.getWidth() - piece.pieceWidth);
+                                    lParams.topMargin = layout.getHeight() - piece.pieceHeight;
+                                    piece.setLayoutParams(lParams);
+                                }
+                            }
 
-                Collections.shuffle(pieces);
-                for(PuzzlePiece piece : pieces) {
-                    piece.setOnTouchListener(touchListener);
-                    layout.addView(piece);
-                    // randomize position, on the bottom of the screen
-                    RelativeLayout.LayoutParams lParams = (RelativeLayout.LayoutParams) piece.getLayoutParams();
-                    lParams.leftMargin = new Random().nextInt(layout.getWidth() - piece.pieceWidth);
-                    lParams.topMargin = layout.getHeight() - piece.pieceHeight;
-                    piece.setLayoutParams(lParams);
-                }
+                            @Override
+                            public void onBitmapFailed(Exception e, Drawable errorDrawable) {
 
+                            }
+
+                            @Override
+                            public void onPrepareLoad(Drawable placeHolderDrawable) {
+
+                            }
+                        });
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
             }
         });
 
     }
+
 
 
     protected void showScore() {
@@ -146,115 +127,17 @@ public class PuzzleActivity extends AppCompatActivity {
         }
     }
 
-    private void setPicFromPath(String mCurrentPhotoPath, ImageView imageView) {
-        // Get the dimensions of the View
-        int targetW = imageView.getWidth();
-        int targetH = imageView.getHeight();
-
-        // Get the dimensions of the bitmap
-        BitmapFactory.Options bmOptions = new BitmapFactory.Options();
-        bmOptions.inJustDecodeBounds = true;
-        BitmapFactory.decodeFile(mCurrentPhotoPath, bmOptions);
-        int photoW = bmOptions.outWidth;
-        int photoH = bmOptions.outHeight;
-
-        // Determine how much to scale down the image
-        int scaleFactor = Math.min(photoW/targetW, photoH/targetH);
-
-        // Decode the image file into a Bitmap sized to fill the View
-        bmOptions.inJustDecodeBounds = false;
-        bmOptions.inSampleSize = scaleFactor;
-        bmOptions.inPurgeable = true;
-
-        Bitmap bitmap = BitmapFactory.decodeFile(mCurrentPhotoPath, bmOptions);
-        Bitmap rotatedBitmap = bitmap;
-
-        // rotate bitmap if needed
-        try {
-            ExifInterface ei = new ExifInterface(mCurrentPhotoPath);
-            int orientation = ei.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_UNDEFINED);
-            switch (orientation) {
-                case ExifInterface.ORIENTATION_ROTATE_90:
-                    rotatedBitmap = rotateImage(bitmap, 90);
-                    break;
-                case ExifInterface.ORIENTATION_ROTATE_180:
-                    rotatedBitmap = rotateImage(bitmap, 180);
-                    break;
-                case ExifInterface.ORIENTATION_ROTATE_270:
-                    rotatedBitmap = rotateImage(bitmap, 270);
-                    break;
-            }
-        } catch (IOException e) {
-            Toast.makeText(this, e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
-        }
-
-        imageView.setImageBitmap(rotatedBitmap);
-    }
-
-    public static Bitmap rotateImage(Bitmap source, float angle) {
-        Matrix matrix = new Matrix();
-        matrix.postRotate(angle);
-        return Bitmap.createBitmap(source, 0, 0, source.getWidth(), source.getHeight(),
-                matrix, true);
-    }
-
-    private void setPicFromAsset(String assetName, ImageView imageView) {
-        // Get the dimensions of the View
-        int targetW = imageView.getWidth();
-        int targetH = imageView.getHeight();
-
-        AssetManager am = getAssets();
-        try {
-            InputStream is = am.open("img/" + assetName);
-            // Get the dimensions of the bitmap
-            BitmapFactory.Options bmOptions = new BitmapFactory.Options();
-            bmOptions.inJustDecodeBounds = true;
-            BitmapFactory.decodeStream(is, new Rect(-1, -1, -1, -1), bmOptions);
-            int photoW = bmOptions.outWidth;
-            int photoH = bmOptions.outHeight;
-
-            // Determine how much to scale down the image
-            int scaleFactor = Math.min(photoW/targetW, photoH/targetH);
-
-            is.reset();
-
-            // Decode the image file into a Bitmap sized to fill the View
-            bmOptions.inJustDecodeBounds = false;
-            bmOptions.inSampleSize = scaleFactor;
-            bmOptions.inPurgeable = true;
-
-            Bitmap bitmap = BitmapFactory.decodeStream(is, new Rect(-1, -1, -1, -1), bmOptions);
-            imageView.setImageBitmap(bitmap);
-
-        } catch (IOException e) {
-            e.printStackTrace();
-            Toast.makeText(this, e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    private ArrayList<PuzzlePiece> splitImage(ImageView imageView) {
+    private ArrayList<PuzzlePiece> splitImage() {
 
         int rows = 3 + MainActivity.difficulty;
         int cols = 2 + MainActivity.difficulty;
         int piecesNumber = rows * cols;
 
-        //ImageView imageView = findViewById(R.id.imageView);
         ArrayList<PuzzlePiece> pieces = new ArrayList<>(piecesNumber);
 
         // Get the scaled bitmap of the source image
         BitmapDrawable drawable = (BitmapDrawable) imageView.getDrawable();
         Bitmap bitmap = drawable.getBitmap();
-//        Bitmap bitmap = drawable.getBitmap();
-
-
-//        imageView.buildDrawingCache();
-//        Bitmap bitmap = imageView.getDrawingCache();
-
-//        imageView.setDrawingCacheEnabled(true);
-//        imageView.buildDrawingCache();
-        //Bitmap bitmap = Bitmap.createBitmap(imageView.getDrawingCache());
-
-
 
         int[] dimensions = getBitmapPositionInsideImageView(imageView);
         int scaledBitmapLeft = dimensions[0];
@@ -289,7 +172,7 @@ public class PuzzleActivity extends AppCompatActivity {
 
                 // apply the offset to each piece
                 Bitmap pieceBitmap = Bitmap.createBitmap(croppedBitmap, xCoord - offsetX, yCoord - offsetY, pieceWidth + offsetX, pieceHeight + offsetY);
-                PuzzlePiece piece = new PuzzlePiece(getApplicationContext());
+                PuzzlePiece piece = new PuzzlePiece(this); //getApplicationContext()
                 piece.setImageBitmap(pieceBitmap);
                 piece.xCoord = xCoord - offsetX + imageView.getLeft();
                 piece.yCoord = yCoord - offsetY + imageView.getTop();
@@ -430,18 +313,19 @@ public class PuzzleActivity extends AppCompatActivity {
     public void onBackPressed() {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setMessage("Back to main menu?")
-            .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            builder.setMessage(R.string.back_to_menu)
+            .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
                     //Music.player.stop(); //Detener música de fondo
                     MainActivity.elapsedTime = 0;
-                    MainActivity.difficulty = 0;
+                    //MainActivity.difficulty = 0; //
+                    MainActivity.imagesview = 0;
                     Intent start = new Intent(PuzzleActivity.this, MainActivity.class);
                     startActivity(start);
                     finishActivity(0);
                 }
             })
-            .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
                     dialog.dismiss();
                 }
@@ -464,13 +348,34 @@ public class PuzzleActivity extends AppCompatActivity {
 
     public void checkGameOver() {
         if (isGameOver()) {
-           // Music.player.stop(); //Detener música de fondo
             showElapsedTime();
-            MainActivity.difficulty += 1;
             MainActivity.elapsedTime += elapsedMillis;
-            showScore();
+            MainActivity.difficulty += 1;
+            MainActivity.imagesview += 1;
+            saveLevel((int)MainActivity.level+1);
+            saveTime(MainActivity.elapsedTime);
             finish();
+            if (MainActivity.imagesview == totalImages){
+                saveLevel(0);
+                saveTime(0);
+                showScore();
+            }
+            // Music.player.stop();
         }
+    }
+
+    public void saveLevel(int level) {
+        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+        DatabaseReference databaseReference = firebaseDatabase.getReference();
+        DatabaseReference scorePointReference = databaseReference.child("Level");
+        scorePointReference.child(GoogleSignInActivity.uid).setValue(level);
+    }
+
+    public void saveTime(int time) {
+        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+        DatabaseReference databaseReference = firebaseDatabase.getReference();
+        DatabaseReference scorePointReference = databaseReference.child("Time");
+        scorePointReference.child(GoogleSignInActivity.uid).setValue(time);
     }
 
     private boolean isGameOver() {

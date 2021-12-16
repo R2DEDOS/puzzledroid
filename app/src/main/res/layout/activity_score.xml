@@ -12,7 +12,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="40dp"
-        android:text="RANKING"
+        android:text="@string/ranking"
         android:textSize="34sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -49,14 +49,14 @@
                     android:id="@+id/column1"
                     android:layout_width="120dp"
                     android:layout_gravity="left"
-                    android:text="NAME"
+                    android:text="@string/name"
                     android:textSize="20sp" />
 
                 <TextView
                     android:id="@+id/column2"
                     android:layout_width="120dp"
                     android:layout_gravity="left"
-                    android:text="TIME (sec)"
+                    android:text="@string/time_sec"
                     android:textSize="20sp" />
             </TableRow>
 
@@ -69,7 +69,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="80dp"
-        android:text="Back to menu"
+        android:text="@string/back_to_menu"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />

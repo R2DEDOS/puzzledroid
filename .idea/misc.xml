@@ -3,10 +3,15 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
-        <entry key="..\:/Users/Javier/Desktop/Puzzlecito_Producto2_11-12/Puzzlecito/app/src/main/res/layout/activity_login.xml" value="0.42916666666666664" />
-        <entry key="..\:/Users/Javier/Desktop/Puzzlecito_Producto2_11-12/Puzzlecito/app/src/main/res/layout/activity_score.xml" value="0.42916666666666664" />
-        <entry key="..\:/Users/Javier/Desktop/Puzzlecito_Producto2_11-12/Puzzlecito/app/src/main/res/layout/activity_score_register.xml" value="0.42916666666666664" />
-        <entry key="..\:/Users/Javier/Desktop/Puzzlecito_Producto2_11-12/Puzzlecito/app/src/main/res/layout/activity_splash_screen.xml" value="0.42916666666666664" />
+        <entry key="..\:/Users/Javier/Desktop/Puzzlecito_Producto2_11-12/Puzzlecito/app/src/main/res/layout/activity_help.xml" value="0.24739583333333334" />
+        <entry key="..\:/Users/Javier/Desktop/Puzzlecito_Producto2_11-12/Puzzlecito/app/src/main/res/layout/activity_login.xml" value="0.24739583333333334" />
+        <entry key="..\:/Users/Javier/Desktop/Puzzlecito_Producto2_11-12/Puzzlecito/app/src/main/res/layout/activity_main.xml" value="0.24739583333333334" />
+        <entry key="..\:/Users/Javier/Desktop/Puzzlecito_Producto2_11-12/Puzzlecito/app/src/main/res/layout/activity_puzzle.xml" value="0.24739583333333334" />
+        <entry key="..\:/Users/Javier/Desktop/Puzzlecito_Producto2_11-12/Puzzlecito/app/src/main/res/layout/activity_score.xml" value="0.24739583333333334" />
+        <entry key="..\:/Users/Javier/Desktop/Puzzlecito_Producto2_11-12/Puzzlecito/app/src/main/res/layout/activity_score_register.xml" value="0.24739583333333334" />
+        <entry key="..\:/Users/Javier/Desktop/Puzzlecito_Producto2_11-12/Puzzlecito/app/src/main/res/layout/activity_select_image.xml" value="0.24739583333333334" />
+        <entry key="..\:/Users/Javier/Desktop/Puzzlecito_Producto2_11-12/Puzzlecito/app/src/main/res/layout/activity_splash_screen.xml" value="0.24739583333333334" />
+        <entry key="..\:/Users/Javier/Desktop/Puzzlecito_Producto2_11-12/Puzzlecito/app/src/main/res/layout/grid_element.xml" value="0.24739583333333334" />
         <entry key="..\:/Users/Javier/Desktop/Puzzlecito_Producto2_11-12/Puzzlecito/app/src/main/res/menu/menu.xml" value="0.24739583333333334" />
       </map>
     </option>

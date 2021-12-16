@@ -3,14 +3,11 @@
     xmlns:tools="http://schemas.android.com/tools">
     tools:context=".MainActivity">
     <item android:id="@+id/Help"
-        android:title="Help"/>
-
-    <item android:id="@+id/Images"
-        android:title="Select Image"/>
+        android:title="@string/help"/>
 
     <item android:id="@+id/Music"
-        android:title="On/Off Music"/>
+        android:title="@string/on_off_music"/>
 
     <item android:id="@+id/MusicFile"
-        android:title="Music file"/>
+        android:title="@string/music_file"/>
 </menu>

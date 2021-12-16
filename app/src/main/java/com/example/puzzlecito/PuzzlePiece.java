@@ -1,7 +1,6 @@
 package com.example.puzzlecito;
 
 import android.content.Context;
-import androidx.appcompat.widget.AppCompatImageView;
 
 
 public class PuzzlePiece extends androidx.appcompat.widget.AppCompatImageView {

@@ -15,7 +15,6 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -24,6 +23,11 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 /**
  * Demonstrate Firebase Authentication using a Google ID Token.
@@ -32,43 +36,25 @@ public class GoogleSignInActivity extends Activity {
 
     private static final String TAG = "GoogleActivity";
     private static final int RC_SIGN_IN = 100;//9001;
+    public static String uid = "";
 
-    // [START declare_auth]
     private FirebaseAuth mAuth;
-    // [END declare_auth]
-
     private GoogleSignInClient mGoogleSignInClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_login);
-
         mAuth = FirebaseAuth.getInstance();
-
-        // [START config_signin]
-        // Configure Google Sign In
-//        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-//                .requestIdToken(getString(R.string.default_web_client_id1))
-//                .requestEmail()
-//                .build();
 
         // Configure Google Sign In
         GoogleSignInOptions gso = new GoogleSignInOptions
                 .Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(getString(R.string.default_web_client_id))
+                .requestIdToken(getString(R.string.default_web_client_id1))
                 .requestEmail()
                 .build();
 
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
-        // [END config_signin]
-
-        // [START initialize_auth]
-        // Initialize Firebase Auth
-
-        // [END initialize_auth]
-
 
         findViewById(R.id.sign_in_button).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -82,17 +68,15 @@ public class GoogleSignInActivity extends Activity {
 
     }
 
-    // [START on_start_check_user]
+
     @Override
     public void onStart() {
         super.onStart();
         // Check if user is signed in (non-null) and update UI accordingly.
         FirebaseUser currentUser = mAuth.getCurrentUser();
-        //updateUI(currentUser);
     }
-    // [END on_start_check_user]
 
-    // [START onactivityresult]
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -111,9 +95,8 @@ public class GoogleSignInActivity extends Activity {
             }
         }
     }
-    // [END onactivityresult]
 
-    // [START auth_with_google]
+
     private void firebaseAuthWithGoogle(GoogleSignInAccount account) {
         AuthCredential credential = GoogleAuthProvider.getCredential(account.getIdToken(), null);
         mAuth.signInWithCredential(credential)
@@ -122,7 +105,7 @@ public class GoogleSignInActivity extends Activity {
                     public void onSuccess(@NonNull AuthResult authResult) {
                         Log.d(TAG, "signInWithCredential:success");
                         FirebaseUser user = mAuth.getCurrentUser();
-                        String uid = user.getUid();
+                        uid = user.getUid();
                         String email = user.getEmail();
 
                         if(authResult.getAdditionalUserInfo().isNewUser()){
@@ -130,10 +113,15 @@ public class GoogleSignInActivity extends Activity {
 
                         }else{
                             Log.d(TAG, "signInWithCredential:existing user");
-                            Toast.makeText(GoogleSignInActivity.this,"Existing User",Toast.LENGTH_LONG).show();
+                            Toast.makeText(GoogleSignInActivity.this,"Session started",Toast.LENGTH_LONG).show();
                         }
 
-                        startActivity(new Intent(GoogleSignInActivity.this,MainActivity.class));
+                        saveLevel(uid);
+                        saveTime(uid);
+
+                        Intent intent = new Intent(GoogleSignInActivity.this, MainActivity.class);
+                        intent.putExtra("email", uid);
+                        startActivity(intent);
                         finish();
 
                     }
@@ -154,18 +142,46 @@ public class GoogleSignInActivity extends Activity {
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();
         startActivityForResult(signInIntent, RC_SIGN_IN);
     }
-    // [END signin]
 
-    //Change UI according to user data.
-//    public void updateUI(FirebaseUser account){
-//
-//        if(account != null){
-//            Toast.makeText(this,"You Signed In successfully",Toast.LENGTH_LONG).show();
-//            startActivity(new Intent(this,MainActivity.class));
-//
-//        }else {
-//            Toast.makeText(this,"You Didnt signed in",Toast.LENGTH_LONG).show();
-//        }
-//
-//    }
+    public void saveLevel(String uid) {
+        final Long[] level = new Long[1];
+        level[0] = (long)0;
+        final FirebaseDatabase[] firebaseDatabase = {FirebaseDatabase.getInstance()};
+        DatabaseReference databaseReference = firebaseDatabase[0].getReference();
+        DatabaseReference emailReference = databaseReference.child("Level").child(GoogleSignInActivity.uid);
+        emailReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                level[0] = snapshot.getValue(Long.class);
+                if (level[0]==null) emailReference.setValue(0);
+                else emailReference.setValue(level[0]);
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+            }
+        });
+    }
+
+    public void saveTime(String uid) {
+        final Long[] time = new Long[1];
+        time[0] = (long) 0;
+        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+        DatabaseReference databaseReference = firebaseDatabase.getReference();
+        DatabaseReference timeReference = databaseReference.child("Time").child(GoogleSignInActivity.uid);
+        timeReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                time[0] = snapshot.getValue(Long.class);
+                if (time[0] == null) timeReference.setValue(0);
+                else timeReference.setValue(time[0]);
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+            }
+        });
+    }
+
+
 }
