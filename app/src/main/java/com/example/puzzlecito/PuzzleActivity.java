@@ -68,7 +68,7 @@ public class PuzzleActivity extends AppCompatActivity {
 
 
                 Random random = new Random();
-                int n = random.nextInt(20 - 1);
+                int n = random.nextInt(15 - 1);
                 String valor = String.valueOf(n);
                 String url = snapshot.child(valor).child("image").getValue(String.class);
                 Picasso.get()
@@ -129,8 +129,8 @@ public class PuzzleActivity extends AppCompatActivity {
 
     private ArrayList<PuzzlePiece> splitImage() {
 
-        int rows = 3;// + MainActivity.difficulty;
-        int cols = 2;// + MainActivity.difficulty;
+        int rows = 3 + MainActivity.difficulty;
+        int cols = 2 + MainActivity.difficulty;
         int piecesNumber = rows * cols;
 
         ArrayList<PuzzlePiece> pieces = new ArrayList<>(piecesNumber);
