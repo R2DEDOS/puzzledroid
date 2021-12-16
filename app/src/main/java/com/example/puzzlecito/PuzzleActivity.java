@@ -129,8 +129,8 @@ public class PuzzleActivity extends AppCompatActivity {
 
     private ArrayList<PuzzlePiece> splitImage() {
 
-        int rows = 3 + MainActivity.difficulty;
-        int cols = 2 + MainActivity.difficulty;
+        int rows = 3;// + MainActivity.difficulty;
+        int cols = 2;// + MainActivity.difficulty;
         int piecesNumber = rows * cols;
 
         ArrayList<PuzzlePiece> pieces = new ArrayList<>(piecesNumber);
