@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.media.MediaPlayer;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -13,6 +14,7 @@ import android.view.Window;
 import android.widget.Button;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -34,6 +36,7 @@ public class MainActivity extends AppCompatActivity implements Window.Callback {
     public static long level=0;
     long contador;
     final Long[] time = new Long[1];
+    final Long[] level_ = new Long[1];
 
 
     @Override
@@ -43,28 +46,19 @@ public class MainActivity extends AppCompatActivity implements Window.Callback {
 
         Intent intent = getIntent();
 
-        //Retrieve level
-        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-        DatabaseReference databaseReference = firebaseDatabase.getReference();
-        DatabaseReference emailReference = databaseReference.child("Level");
-        emailReference.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                level = snapshot.child(GoogleSignInActivity.uid).getValue(Long.class);
-                difficulty = (int) level;
-            }
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-            }
-        });
-
-        //retrieve time
+        //retrieve time and level
         time[0] = (long) 0;
-        DatabaseReference timeReference = databaseReference.child("Time").child(GoogleSignInActivity.uid);
-        timeReference.addListenerForSingleValueEvent(new ValueEventListener() {
+        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+        DatabaseReference reference = firebaseDatabase.getReference();
+        reference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                time[0] = snapshot.getValue(Long.class);
+                level_[0] = snapshot.child("Level").child(GoogleSignInActivity.uid).getValue(Long.class);
+                if (level_[0] == null) level = 0;
+                else level = Math.toIntExact(level_[0]);
+                difficulty = (int) level;
+                time[0] = snapshot.child("Time").child(GoogleSignInActivity.uid).getValue(Long.class);
                 if (time[0] == null) time[0] = 0L;
                 else elapsedTime += time[0];
 

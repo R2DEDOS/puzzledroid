@@ -135,9 +135,8 @@ public class GoogleSignInActivity extends Activity {
                     }
         });
     }
-    // [END auth_with_google]
 
-    // [START signin]
+
     private void signIn() {
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();
         startActivityForResult(signInIntent, RC_SIGN_IN);

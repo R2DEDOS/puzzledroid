@@ -77,6 +77,7 @@ public class PuzzleActivity extends AppCompatActivity {
                             @Override
                             public void onBitmapLoaded(final Bitmap bitmap, Picasso.LoadedFrom from) {
                                 imageView.setImageBitmap(bitmap);
+
                                 pieces = splitImage();
                                 TouchListener touchListener = new TouchListener(PuzzleActivity.this);
 
@@ -351,8 +352,9 @@ public class PuzzleActivity extends AppCompatActivity {
             showElapsedTime();
             MainActivity.elapsedTime += elapsedMillis;
             MainActivity.difficulty += 1;
+            MainActivity.level+=1;//
             MainActivity.imagesview += 1;
-            saveLevel((int)MainActivity.level+1);
+            saveLevel((int)MainActivity.level);
             saveTime(MainActivity.elapsedTime);
             finish();
             if (MainActivity.imagesview == totalImages){
